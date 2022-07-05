@@ -1,0 +1,231 @@
+<html>
+    <head>
+        <title>3D try</title>
+    </head>
+    <body>
+        <canvas id='cvs'></canvas>
+        <script>
+            const cvs = document.getElementById('cvs');
+            const ctx = cvs.getContext('2d');
+
+            cvs.width = 600;
+            cvs.height = 600;
+            cvs.style.border = '1px solid black';
+
+            const cam = {
+                x:0,
+                y:0,
+                z:-80,
+            }
+
+            let screen = {
+                low:[-100,-100,0],
+                high:[100,100,0]
+            }
+
+            let dots = [
+                {x:200,y:200,z:100},
+                {x:200,y:300,z:100},
+                {x:300,y:200,z:100},
+                {x:300,y:300,z:100},
+                {x:200,y:200,z:200},
+                {x:200,y:300,z:200},
+                {x:300,y:200,z:200},
+                {x:300,y:300,z:200}
+                // {x:50,y:50,z:100},
+                // {x:-50,y:-10,z:120}
+            ];
+
+            let edges = [
+                [0,1],
+                [0,2],
+                [1,3],
+                [2,3],
+                [0,4],
+                [1,5],
+                [2,6],
+                [3,7],
+                [4,5],
+                [4,6],
+                [5,7],
+                [6,7]   
+                // [0,1]  
+            ]
+
+            function render(dot) {
+                let x = dot.x;
+                let y = dot.y;
+                let z = dot.z;
+                // if ((screen.low[0]<screen.low[1]&&x<screen.low[0]&&cam.x<screen.low[0])
+                // ||(screen.low[1]<screen.high[1]&&y<screen.low[1]&&cam.y<screen.low[1])
+                // ||(screen.low[2]<screen.high[2]&&z<screen.low[2]&&cam.z<screen.low[2])
+                // ||(screen.high[0]>screen.low[0]&&x>screen.high[0]&&cam.x>screen.high[0])
+                // ||(screen.high[1]>screen.low[1]&&x>screen.high[1]&&cam.x>screen.high[1])
+                // ||(screen.high[2]>screen.low[2]&&x>screen.high[2]&&cam.x>screen.high[2])) {
+                //     return;
+                // }
+                // if ((screen.low[0]>screen.low[1]&&x>screen.low[0]&&cam.x>screen.low[0])
+                // ||(screen.low[1]>screen.high[1]&&y>screen.low[1]&&cam.y>screen.low[1])
+                // ||(screen.low[2]>screen.high[2]&&z>screen.low[2]&&cam.z>screen.low[2])
+                // ||(screen.high[0]<screen.low[0]&&x<screen.high[0]&&cam.x<screen.high[0])
+                // ||(screen.high[1]<screen.low[1]&&x<screen.high[1]&&cam.x<screen.high[1])
+                // ||(screen.high[2]<screen.low[2]&&x<screen.high[2]&&cam.x<screen.high[2])) {
+                //     return;
+                // }
+                let castX = getX(x,z);
+                let castY = getY(y,z);
+                // console.log(castX,castY);
+                if (castX && castY) {
+                    ctx.save();
+                    // ctx.scale(600/Math.hypot(screen.low[0]-screen.high[0],screen.low[1]-screen.high[1]),600/Math.hypot(screen.low[1]-screen.high[1],screen.low[2]-screen.high[2]));
+                    // ctx.translate((screen.low[0]<screen.high[0])?screen.low[0]:screen.high[0],(screen.low[1]<screen.high[1])?screen.low[1]:screen.high[1])
+                    ctx.fillStyle = 'black';
+                    console.log('dot');
+                    console.log(castX,castX*600)
+                    ctx.fillRect(castX*600,castY*600,2,2);
+                    ctx.restore();
+                }
+            }
+
+            function getX(dotx,dotz) {
+                let x1 = screen.low[0];
+                let x2 = screen.high[0];
+                let y1 = screen.low[2];
+                let y2 = screen.high[2];
+                let sgrad, soffset, ograd, ooffset, solvedX, solvedY;
+                if (x1!=x2) {
+                    sgrad = (y1-y2)/(x1-x2);
+                    soffset = y1-x1*(sgrad);
+                    ograd = (dotz-cam.z)/(dotx-cam.x);
+                    ooffset = dotz-dotx*(ograd);
+                    solvedX = -(ooffset-soffset)/(ograd-sgrad);
+                    solvedY = (sgrad*solvedX + soffset);
+                    if ((Math.hypot(screen.low[0]-solvedX,screen.low[2]-solvedY)+Math.hypot(screen.high[0]-solvedX,screen.high[2]-solvedY))-Math.hypot(screen.low[0]-screen.high[0],screen.low[2]-screen.high[2])>2) {
+                        // return -Math.hypot(screen.low[0]-solvedX,screen.low[2]-solvedY)
+                        // return false;
+                        // return ((-(Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2)))<0)?-(Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2)):(2-(Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2)));
+                        if ((Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2))>1) {
+                            return (Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2));
+                        }
+                        else if ((-(Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2)))<=0) {
+                            return -(Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2))
+                        }
+                    }
+                    else {
+                        return Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2);
+                    }
+                    // return Math.hypot(screen.low[0]-solvedX,screen.low[2]-solvedY)
+                }
+            }
+
+            function getY(doty,dotz) {
+                let x1 = screen.low[1];
+                let x2 = screen.high[1];
+                let y1 = screen.low[2];
+                let y2 = screen.high[2];
+                let sgrad, soffset, ograd, ooffset, solvedX, solvedY;
+                if (x1!=x2) {
+                    sgrad = (y1-y2)/(x1-x2);
+                    soffset = y1-x1*(sgrad);
+                    ograd = (dotz-cam.z)/(doty-cam.y);
+                    ooffset = dotz-doty*(ograd);
+                    solvedX = -(ooffset-soffset)/(ograd-sgrad);
+                    solvedY = (sgrad*solvedX + soffset);
+                    console.log(solvedX,solvedY,x1,x2,y1,y2,doty,dotz);
+                    console.log(Math.hypot(x1-solvedX,y1-solvedY),Math.hypot(x2-solvedX,y2-solvedY),Math.hypot(x1-x2,y1-y2));
+                    if ((Math.hypot(x1-solvedX,y1-solvedY)+Math.hypot(x2-solvedX,y2-solvedY))>Math.hypot(x1-x2,y1-y2)) {
+                        // return -Math.hypot(x1-solvedX,y1-solvedY)
+                        // return false;
+                        if ((Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2))>1) {
+                            return (Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2));
+                        }
+                        else if ((-(Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2)))<=0) {
+                            return -(Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2))
+                        }
+                        // else if (((Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2)))>1) {
+
+                        // }
+                        // return ((-(Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2)))<0)?-(Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2)):(1-Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2))+1;
+                    }
+                    else {
+                        return Math.hypot(x1-solvedX,y1-solvedY)/Math.hypot(x1-x2,y1-y2);
+                    }
+                    // return (((screen.low[1]-solvedX)<0||(screen.low[2]-solvedY)>0)&&!((screen.low[1]-solvedX)<0&&(screen.low[2]-solvedY)>0))?Math.hypot(screen.low[1]-solvedX,screen.low[2]-solvedY):-Math.hypot(screen.low[1]-solvedX,screen.low[2]-solvedY)
+                }
+            }
+
+            function mainRender() {
+                dots.forEach(x=>{
+                    render(x);
+                })
+
+                edges.forEach(x=>{
+                    let castX1 = getX(dots[x[0]].x,dots[x[0]].z);
+                    let castY1 = getY(dots[x[0]].y,dots[x[0]].z);
+                    let castX2 = getX(dots[x[1]].x,dots[x[1]].z);
+                    let castY2 = getY(dots[x[1]].y,dots[x[1]].z);
+                    ctx.save();
+                    // ctx.scale(600/Math.hypot(screen.low[0]-screen.high[0],screen.low[1]-screen.high[1]),600/Math.hypot(screen.low[1]-screen.high[1],screen.low[2]-screen.high[2]));
+                    ctx.strokeStyle = 'black';
+                    ctx.beginPath();
+                    if (castX1 && castY1) {
+                        ctx.moveTo(castX1*600,castY1*600);
+                        if (castX2 && castY2) {
+                            ctx.lineTo(castX2*600,castY2*600);
+                        }
+                    }
+                    // ctx.moveTo(castX1,castY1);
+                    // ctx.lineTo(castX2,castY2);
+                    ctx.stroke();
+                    ctx.closePath();
+                    ctx.restore();
+                })
+            }
+
+            mainRender();
+
+            document.addEventListener('keydown',(e)=>{
+                 ctx.clearRect(0,0,600,600);
+                 switch(e.key) {
+                    case 'a':
+                        cam.x-=3;
+                        screen.low[0]-=3;
+                        screen.high[0]-=3;
+                        mainRender();
+                        break;
+                    case 'q':
+                        cam.z-=3;
+                        screen.low[2]-=3;
+                        screen.high[2]-=3;
+                        mainRender();
+                        break;
+                    case 'w':
+                        cam.y-=3;
+                        screen.low[1]-=3;
+                        screen.high[1]-=3;
+                        mainRender();
+                        break;
+                    case 's':
+                        cam.y+=3;
+                        screen.low[1]+=3;
+                        screen.high[1]+=3;
+                        mainRender();
+                        break;
+                    case 'd':
+                        cam.x+=3;
+                        screen.low[0]+=3;
+                        screen.high[0]+=3;
+                        mainRender();
+                        break;
+                    case 'e':
+                        cam.z+=3;
+                        screen.low[2]+=3;
+                        screen.high[2]+=3;
+                        mainRender();
+                        break;
+                 }
+                 console.log(cam);
+             })
+        </script>
+    </body>
+</html>
