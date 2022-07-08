@@ -12,6 +12,9 @@
             cvs.height = 600;
             cvs.style.border = '1px solid black';
 
+            let screenRX = 0;
+            let screenRY = 0;
+
             const cam = {
                 x:0,
                 y:0,
@@ -24,14 +27,14 @@
             }
 
             let dots = [
-                {x:100,y:100,z:100},
-                {x:100,y:200,z:100},
-                {x:200,y:100,z:100},
-                {x:200,y:200,z:100},
-                {x:100,y:100,z:200},
-                {x:100,y:200,z:200},
-                {x:200,y:100,z:200},
-                {x:200,y:200,z:200}
+                {x:100,y:100,z:100,r:0},
+                {x:100,y:200,z:100,r:0},
+                {x:200,y:100,z:100,r:0},
+                {x:200,y:200,z:100,r:0},
+                {x:100,y:100,z:200,r:0},
+                {x:100,y:200,z:200,r:0},
+                {x:200,y:100,z:200,r:0},
+                {x:200,y:200,z:200,r:0}
                 // {x:50,y:50,z:100},
                 // {x:-50,y:-10,z:120}
             ];
@@ -241,6 +244,19 @@
                         })
                         mainRender();
                         break;
+                    // case 'j':
+                    //     if (screenRX<Math.PI) {
+                    //         screenRX += Math.PI/18;
+                    //         console.log(screenRX);
+                    //         screen.low[0] += Math.sin(screenRX)*5;
+                    //         screen.low[2] += Math.cos(screenRX)*5;
+                    //         screen.high[0] += Math.sin(screenRX)*5;
+                    //         screen.high[2] += Math.cos(screenRX)*5;
+                    //         cam.x += Math.sin(screenRX)*5;
+                    //         cam.z += Math.cos(screenRX)*5;
+                    //     }
+                    //     mainRender();
+                    //     break;
                 }
              })
         </script>
