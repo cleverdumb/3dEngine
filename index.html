@@ -24,14 +24,14 @@
             }
 
             let dots = [
+                {x:100,y:100,z:100},
+                {x:100,y:200,z:100},
+                {x:200,y:100,z:100},
                 {x:200,y:200,z:100},
-                {x:200,y:300,z:100},
-                {x:300,y:200,z:100},
-                {x:300,y:300,z:100},
-                {x:200,y:200,z:200},
-                {x:200,y:300,z:200},
-                {x:300,y:200,z:200},
-                {x:300,y:300,z:200}
+                {x:100,y:100,z:200},
+                {x:100,y:200,z:200},
+                {x:200,y:100,z:200},
+                {x:200,y:200,z:200}
                 // {x:50,y:50,z:100},
                 // {x:-50,y:-10,z:120}
             ];
@@ -80,8 +80,8 @@
                     // ctx.scale(600/Math.hypot(screen.low[0]-screen.high[0],screen.low[1]-screen.high[1]),600/Math.hypot(screen.low[1]-screen.high[1],screen.low[2]-screen.high[2]));
                     // ctx.translate((screen.low[0]<screen.high[0])?screen.low[0]:screen.high[0],(screen.low[1]<screen.high[1])?screen.low[1]:screen.high[1])
                     ctx.fillStyle = 'black';
-                    console.log('dot');
-                    console.log(castX,castX*600)
+                    // console.log('dot');
+                    // console.log(castX,castX*600)
                     ctx.fillRect(castX*600,castY*600,2,2);
                     ctx.restore();
                 }
@@ -131,8 +131,8 @@
                     ooffset = dotz-doty*(ograd);
                     solvedX = -(ooffset-soffset)/(ograd-sgrad);
                     solvedY = (sgrad*solvedX + soffset);
-                    console.log(solvedX,solvedY,x1,x2,y1,y2,doty,dotz);
-                    console.log(Math.hypot(x1-solvedX,y1-solvedY),Math.hypot(x2-solvedX,y2-solvedY),Math.hypot(x1-x2,y1-y2));
+                    // console.log(solvedX,solvedY,x1,x2,y1,y2,doty,dotz);
+                    // console.log(Math.hypot(x1-solvedX,y1-solvedY),Math.hypot(x2-solvedX,y2-solvedY),Math.hypot(x1-x2,y1-y2));
                     if ((Math.hypot(x1-solvedX,y1-solvedY)+Math.hypot(x2-solvedX,y2-solvedY))>Math.hypot(x1-x2,y1-y2)) {
                         // return -Math.hypot(x1-solvedX,y1-solvedY)
                         // return false;
@@ -155,6 +155,7 @@
             }
 
             function mainRender() {
+                ctx.clearRect(0,0,600,600);
                 dots.forEach(x=>{
                     render(x);
                 })
@@ -185,46 +186,62 @@
             mainRender();
 
             document.addEventListener('keydown',(e)=>{
-                 ctx.clearRect(0,0,600,600);
-                 switch(e.key) {
+                switch(e.key) {
                     case 'a':
-                        cam.x-=3;
-                        screen.low[0]-=3;
-                        screen.high[0]-=3;
+                        // cam.x-=3;
+                        // screen.low[0]-=3;
+                        // screen.high[0]-=3;
+                        dots.forEach(x=>{
+                            x.x+=3;
+                        })
                         mainRender();
                         break;
                     case 'q':
-                        cam.z-=3;
-                        screen.low[2]-=3;
-                        screen.high[2]-=3;
+                        // cam.z-=3;
+                        // screen.low[2]-=3;
+                        // screen.high[2]-=3;
+                        dots.forEach(x=>{
+                            x.z+=3;
+                        })
                         mainRender();
                         break;
                     case 'w':
-                        cam.y-=3;
-                        screen.low[1]-=3;
-                        screen.high[1]-=3;
+                        // cam.y-=3;
+                        // screen.low[1]-=3;
+                        // screen.high[1]-=3;
+                        dots.forEach(x=>{
+                            x.y+=3;
+                        })
                         mainRender();
                         break;
                     case 's':
-                        cam.y+=3;
-                        screen.low[1]+=3;
-                        screen.high[1]+=3;
+                        // cam.y+=3;
+                        // screen.low[1]+=3;
+                        // screen.high[1]+=3;
+                        dots.forEach(x=>{
+                            x.y-=3;
+                        })
                         mainRender();
                         break;
                     case 'd':
-                        cam.x+=3;
-                        screen.low[0]+=3;
-                        screen.high[0]+=3;
+                        // cam.x+=3;
+                        // screen.low[0]+=3;
+                        // screen.high[0]+=3;
+                        dots.forEach(x=>{
+                            x.x-=3;
+                        })
                         mainRender();
                         break;
                     case 'e':
-                        cam.z+=3;
-                        screen.low[2]+=3;
-                        screen.high[2]+=3;
+                        // cam.z+=3;
+                        // screen.low[2]+=3;
+                        // screen.high[2]+=3;
+                        dots.forEach(x=>{
+                            x.z-=3;
+                        })
                         mainRender();
                         break;
-                 }
-                 console.log(cam);
+                }
              })
         </script>
     </body>
