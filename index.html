@@ -275,12 +275,42 @@
                         })
                         mainRender();
                         break;
-                    case 'j':
+                    case 'l':
                         dots.forEach(x=>{
                             let angle = Math.atan2(x.z-cam.z,x.x-cam.x)+Math.PI/36;
                             let dist = Math.hypot(x.z-cam.z,x.x-cam.x);
                             console.log(angle);
                             x.x = Math.cos(angle)*dist+cam.x;
+                            x.z = Math.sin(angle)*dist+cam.z;
+                        })
+                        mainRender();
+                        break;
+                    case 'j':
+                        dots.forEach(x=>{
+                            let angle = Math.atan2(x.z-cam.z,x.x-cam.x)-Math.PI/36;
+                            let dist = Math.hypot(x.z-cam.z,x.x-cam.x);
+                            console.log(angle);
+                            x.x = Math.cos(angle)*dist+cam.y;
+                            x.z = Math.sin(angle)*dist+cam.z;
+                        })
+                        mainRender();
+                        break;
+                    case 'k':
+                        dots.forEach(x=>{
+                            let angle = Math.atan2(x.z-cam.z,x.y-cam.y)+Math.PI/36;
+                            let dist = Math.hypot(x.z-cam.z,x.y-cam.y);
+                            console.log(angle);
+                            x.y = Math.cos(angle)*dist+cam.y;
+                            x.z = Math.sin(angle)*dist+cam.z;
+                        })
+                        mainRender();
+                        break;
+                    case 'i':
+                        dots.forEach(x=>{
+                            let angle = Math.atan2(x.z-cam.z,x.y-cam.y)-Math.PI/36;
+                            let dist = Math.hypot(x.z-cam.z,x.y-cam.y);
+                            console.log(angle);
+                            x.y = Math.cos(angle)*dist+cam.y;
                             x.z = Math.sin(angle)*dist+cam.z;
                         })
                         mainRender();
