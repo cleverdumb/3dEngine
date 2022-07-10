@@ -18,7 +18,7 @@
             const cam = {
                 x:0,
                 y:0,
-                z:-80,
+                z:-30,
             }
 
             let screen = {
@@ -27,14 +27,14 @@
             }
 
             let dots = [
-                {x:100,y:100,z:100,r:0},
-                {x:100,y:200,z:100,r:0},
-                {x:200,y:100,z:100,r:0},
-                {x:200,y:200,z:100,r:0},
-                {x:100,y:100,z:200,r:0},
-                {x:100,y:200,z:200,r:0},
-                {x:200,y:100,z:200,r:0},
-                {x:200,y:200,z:200,r:0}
+                {x:100,y:100,z:200},
+                {x:100,y:200,z:200},
+                {x:200,y:100,z:200},
+                {x:200,y:200,z:200},
+                {x:100,y:100,z:300},
+                {x:100,y:200,z:300},
+                {x:200,y:100,z:300},
+                {x:200,y:200,z:300}
                 // {x:50,y:50,z:100},
                 // {x:-50,y:-10,z:120}
             ];
@@ -75,6 +75,12 @@
                 // ||(screen.high[2]<screen.low[2]&&x<screen.high[2]&&cam.x<screen.high[2])) {
                 //     return;
                 // }
+                if (z<screen.low[2] && cam.z<screen.low[2]) {
+                    return;
+                }
+                if (z>screen.low[2] && cam.z>screen.low[2]) {
+                    return;
+                }
                 let castX = getX(x,z);
                 let castY = getY(y,z);
                 // console.log(castX,castY);
@@ -164,6 +170,18 @@
                 })
 
                 edges.forEach(x=>{
+                    if (dots[x[0]].z<screen.low[2] && cam.z<screen.low[2]) {
+                        return;
+                    }
+                    if (dots[x[0]].z>screen.low[2] && cam.z>screen.low[2]) {
+                        return;
+                    }
+                    if (dots[x[1]].z<screen.low[2] && cam.z<screen.low[2]) {
+                        return;
+                    }
+                    if (dots[x[1]].z>screen.low[2] && cam.z>screen.low[2]) {
+                        return;
+                    }
                     let castX1 = getX(dots[x[0]].x,dots[x[0]].z);
                     let castY1 = getY(dots[x[0]].y,dots[x[0]].z);
                     let castX2 = getX(dots[x[1]].x,dots[x[1]].z);
@@ -184,6 +202,19 @@
                     ctx.closePath();
                     ctx.restore();
                 })
+                // ctx.save();
+                // ctx.translate(300,400);
+                // ctx.scale(0.4,0.4);
+                // ctx.strokeStyle = 'black';
+                // ctx.beginPath();
+                // ctx.moveTo(screen.low[0],screen.low[2]);
+                // ctx.lineTo(screen.high[0],screen.low[2]);
+                // ctx.stroke();
+                // ctx.closePath();
+                // ctx.fillStyle = 'black';
+                // ctx.fillRect(cam.x,cam.z,10,10);
+                // ctx.fillRect(dots[0].x,dots[0].z,10,10);
+                // ctx.restore();
             }
 
             mainRender();
@@ -244,19 +275,16 @@
                         })
                         mainRender();
                         break;
-                    // case 'j':
-                    //     if (screenRX<Math.PI) {
-                    //         screenRX += Math.PI/18;
-                    //         console.log(screenRX);
-                    //         screen.low[0] += Math.sin(screenRX)*5;
-                    //         screen.low[2] += Math.cos(screenRX)*5;
-                    //         screen.high[0] += Math.sin(screenRX)*5;
-                    //         screen.high[2] += Math.cos(screenRX)*5;
-                    //         cam.x += Math.sin(screenRX)*5;
-                    //         cam.z += Math.cos(screenRX)*5;
-                    //     }
-                    //     mainRender();
-                    //     break;
+                    case 'j':
+                        dots.forEach(x=>{
+                            let angle = Math.atan2(x.z-cam.z,x.x-cam.x)+Math.PI/36;
+                            let dist = Math.hypot(x.z-cam.z,x.x-cam.x);
+                            console.log(angle);
+                            x.x = Math.cos(angle)*dist+cam.x;
+                            x.z = Math.sin(angle)*dist+cam.z;
+                        })
+                        mainRender();
+                        break;
                 }
              })
         </script>
